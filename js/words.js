@@ -1,5 +1,8 @@
-// Word model helpers: default word list, emoji lookup, validation, shuffling.
-const DEFAULT_WORD_LIST = ['shack', 'damp', 'spat', 'snacked', 'dashed', 'snapped', 'crashed', 'crack'];
+// Word model helpers: default word lists, emoji lookup, validation, shuffling.
+const DEFAULT_WORD_LISTS = {
+  dalton: ['shack', 'damp', 'spat', 'snacked', 'dashed', 'snapped', 'crashed', 'crack'],
+  giselle: ['ant', 'map', 'cat', 'hat', 'apple', 'pan', 'mop', 'queen', 'man', 'car', 'fish']
+};
 
 const DEFAULT_EMOJI = {
   shack: '🛖',
@@ -9,7 +12,18 @@ const DEFAULT_EMOJI = {
   dashed: '💨',
   snapped: '💥',
   crashed: '💥',
-  crack: '🥚'
+  crack: '🥚',
+  ant: '🐜',
+  map: '🗺️',
+  cat: '🐱',
+  hat: '🎩',
+  apple: '🍎',
+  pan: '🍳',
+  mop: '🧹',
+  queen: '👑',
+  man: '🧑',
+  car: '🚗',
+  fish: '🐟'
 };
 
 const FALLBACK_EMOJI = '📝';

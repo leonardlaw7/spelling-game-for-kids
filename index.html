@@ -8,11 +8,30 @@
 </head>
 <body>
 
+<!-- PROFILE SCREEN -->
+<section id="screen-profile" class="screen">
+  <div class="menu-content">
+    <h1 class="title">🔤 Who's playing? 🔤</h1>
+    <div class="difficulty-choices">
+      <button class="big-btn choice-btn" data-profile="dalton">
+        <span class="choice-emoji">🧒</span>
+        <span>Dalton</span>
+      </button>
+      <button class="big-btn choice-btn" data-profile="giselle">
+        <span class="choice-emoji">👧</span>
+        <span>Giselle</span>
+      </button>
+    </div>
+  </div>
+</section>
+
 <!-- MENU SCREEN -->
-<section id="screen-menu" class="screen">
+<section id="screen-menu" class="screen" hidden>
   <button id="btn-manage" class="icon-btn corner-btn" title="Manage Words" aria-label="Manage Words">⚙️</button>
+  <button id="btn-switch-profile" class="icon-btn corner-btn-right" title="Switch Profile" aria-label="Switch Profile">🔄</button>
   <div class="menu-content">
     <h1 class="title">🔤 Spelling Adventure! 🔤</h1>
+    <div id="profile-badge" class="profile-badge">Playing as: <span id="profile-name"></span></div>
     <button id="btn-play" class="big-btn primary-btn">▶️ Play</button>
   </div>
 </section>
@@ -86,6 +105,7 @@
 </section>
 
 <script src="js/state.js"></script>
+<script src="js/profiles.js"></script>
 <script src="js/storage.js"></script>
 <script src="js/words.js"></script>
 <script src="js/speech.js"></script>

@@ -1,6 +1,7 @@
 // In-memory app state + screen navigation helper.
 const appState = {
-  screen: 'menu',
+  screen: 'profile',
+  profile: null,
   difficulty: null,
   words: [],
   playOrder: [],

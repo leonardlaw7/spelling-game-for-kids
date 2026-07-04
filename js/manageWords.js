@@ -2,7 +2,7 @@
 let pendingImageDataUrl = null;
 
 function renderWordList() {
-  const state = loadState();
+  const state = loadState(appState.profile);
   appState.words = state.words;
   const list = document.getElementById('word-list');
   list.innerHTML = '';
@@ -42,9 +42,9 @@ function renderWordList() {
 
 function deleteWord(id) {
   if (!confirm('Remove this word from the list?')) return;
-  const state = loadState();
+  const state = loadState(appState.profile);
   state.words = state.words.filter((w) => w.id !== id);
-  saveState(state);
+  saveState(appState.profile, state);
   renderWordList();
 }
 
@@ -83,14 +83,14 @@ function handleAddWordSubmit(e) {
     return;
   }
 
-  const state = loadState();
+  const state = loadState(appState.profile);
   if (state.words.some((w) => w.text === text)) {
     errorEl.textContent = 'That word is already in the list.';
     return;
   }
 
   state.words.push({ id: makeId(), text, imageDataUrl: pendingImageDataUrl });
-  saveState(state);
+  saveState(appState.profile, state);
   resetAddForm();
   renderWordList();
 }
@@ -108,7 +108,7 @@ function handleImageFileChange(e) {
 
 function handleResetWords() {
   if (!confirm('This will remove your custom words and bring back the original word list. Continue?')) return;
-  resetToDefaultWords();
+  resetToDefaultWords(appState.profile);
   renderWordList();
 }
 
