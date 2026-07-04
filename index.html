@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Spelling Adventure!</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- MENU SCREEN -->
+<section id="screen-menu" class="screen">
+  <button id="btn-manage" class="icon-btn corner-btn" title="Manage Words" aria-label="Manage Words">⚙️</button>
+  <div class="menu-content">
+    <h1 class="title">🔤 Spelling Adventure! 🔤</h1>
+    <button id="btn-play" class="big-btn primary-btn">▶️ Play</button>
+  </div>
+</section>
+
+<!-- DIFFICULTY SCREEN -->
+<section id="screen-difficulty" class="screen" hidden>
+  <button class="icon-btn corner-btn btn-home" title="Home" aria-label="Home">🏠</button>
+  <div class="menu-content">
+    <h2 class="title">Choose a level</h2>
+    <div class="difficulty-choices">
+      <button id="btn-easy" class="big-btn choice-btn">
+        <span class="choice-emoji">🌟</span>
+        <span>Easy</span>
+      </button>
+      <button id="btn-hard" class="big-btn choice-btn">
+        <span class="choice-emoji">🚀</span>
+        <span>Hard</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- GAME SCREEN -->
+<section id="screen-game" class="screen" hidden>
+  <button class="icon-btn corner-btn btn-home" title="Home" aria-label="Home">🏠</button>
+  <button id="btn-listen" class="icon-btn corner-btn-right" title="Listen" aria-label="Listen to the word">🔊</button>
+
+  <div class="game-content">
+    <div id="word-image" class="word-image" aria-hidden="true"></div>
+
+    <div id="blanks-row" class="blanks-row"></div>
+
+    <div id="feedback-msg" class="feedback-msg" aria-live="polite"></div>
+
+    <div id="tiles-row" class="tiles-row"></div>
+
+    <button id="btn-clear" class="small-btn">🧹 Clear</button>
+  </div>
+
+  <!-- Celebration overlay -->
+  <div id="celebration" class="celebration-overlay" hidden>
+    <div class="celebration-box">
+      <div id="celebration-emoji" class="celebration-emoji">🎉</div>
+      <div id="celebration-text" class="celebration-text">Awesome!</div>
+      <button id="btn-next-word" class="big-btn primary-btn">Next word →</button>
+    </div>
+  </div>
+</section>
+
+<!-- MANAGE WORDS SCREEN -->
+<section id="screen-manage" class="screen" hidden>
+  <button class="icon-btn corner-btn btn-home" title="Home" aria-label="Home">🏠</button>
+  <div class="manage-content">
+    <h2 class="title">Manage Words</h2>
+
+    <form id="add-word-form" class="add-word-form">
+      <div class="add-word-preview" id="add-word-preview">📝</div>
+      <input id="new-word-input" type="text" placeholder="Type a word..." autocomplete="off" maxlength="20">
+      <label class="upload-label">
+        📷 Photo (optional)
+        <input id="new-word-image" type="file" accept="image/*" hidden>
+      </label>
+      <button type="submit" class="small-btn">➕ Add Word</button>
+    </form>
+    <div id="add-word-error" class="add-word-error" aria-live="polite"></div>
+
+    <ul id="word-list" class="word-list"></ul>
+
+    <button id="btn-reset-words" class="small-btn reset-btn">↺ Reset to Default Words</button>
+  </div>
+</section>
+
+<script src="js/state.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/words.js"></script>
+<script src="js/speech.js"></script>
+<script src="js/game.js"></script>
+<script src="js/manageWords.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
