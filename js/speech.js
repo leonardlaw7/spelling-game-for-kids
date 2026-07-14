@@ -6,6 +6,15 @@ const PRAISE_PHRASES = ['Awesome!', 'You got it!', 'Wonderful!', 'Great job!'];
 // one across calls makes every speak() after the first silently produce no audio.
 let cachedVoiceURI = null;
 
+// Utterances pending/speaking, kept referenced here so they can't be garbage collected
+// mid-flight - a GC'd utterance is the classic cause of "speech works once, then never again".
+const pinnedUtterances = [];
+
+function unpinUtterance(utterance) {
+  const index = pinnedUtterances.indexOf(utterance);
+  if (index !== -1) pinnedUtterances.splice(index, 1);
+}
+
 function speechSupported() {
   return 'speechSynthesis' in window;
 }
@@ -45,14 +54,18 @@ function speak(text, options) {
   utterance.volume = 1.0;
   const voice = getCurrentVoice();
   if (voice) utterance.voice = voice;
-  utterance.onerror = (e) => console.warn('Speech synthesis failed:', e.error);
+  utterance.onend = () => unpinUtterance(utterance);
+  utterance.onerror = (e) => {
+    console.warn('Speech synthesis failed:', e.error);
+    unpinUtterance(utterance);
+  };
+  pinnedUtterances.push(utterance);
 
-  // Chrome has a long-standing bug where speak() called synchronously right after
-  // cancel() is silently dropped (and can wedge all future speech). A tiny delay dodges it.
-  setTimeout(() => {
-    if (speechSynthesis.paused) speechSynthesis.resume();
-    speechSynthesis.speak(utterance);
-  }, 30);
+  // Call speak() synchronously, in the same tick as the triggering click - deferring it
+  // (e.g. via setTimeout) can make the browser stop treating it as a direct result of the
+  // user's gesture, which some browsers require in order to actually produce audio.
+  if (speechSynthesis.paused) speechSynthesis.resume();
+  speechSynthesis.speak(utterance);
 }
 
 function speakWord(word) {
