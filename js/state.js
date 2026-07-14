@@ -3,6 +3,7 @@ const appState = {
   screen: 'profile',
   profile: null,
   difficulty: null,
+  wordSet: null, // section name to practice (e.g. 'This Week'), or null for all words
   words: [],
   playOrder: [],
   currentIndex: 0,

@@ -9,7 +9,15 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-switch-profile').addEventListener('click', switchProfile);
 
   document.getElementById('btn-play').addEventListener('click', () => {
-    showScreen('difficulty');
+    const state = loadState(appState.profile);
+    const sections = getAvailableSections(state.words);
+    if (sections.length > 1) {
+      renderWordSetChoices(sections);
+      showScreen('wordset');
+    } else {
+      appState.wordSet = null;
+      showScreen('difficulty');
+    }
   });
 
   document.getElementById('btn-manage').addEventListener('click', () => {
@@ -38,14 +46,48 @@ document.addEventListener('DOMContentLoaded', () => {
   showScreen('profile');
 });
 
+const WORDSET_META = {
+  'This Week': { emoji: '🗓️', label: 'This Week' },
+  'Recap': { emoji: '🔁', label: 'Recap' }
+};
+
+function renderWordSetChoices(sections) {
+  const container = document.getElementById('wordset-choices');
+  container.innerHTML = '';
+  sections.forEach((section) => {
+    const meta = WORDSET_META[section] || { emoji: '📝', label: section };
+    const btn = document.createElement('button');
+    btn.className = 'big-btn choice-btn';
+    btn.type = 'button';
+
+    const emojiSpan = document.createElement('span');
+    emojiSpan.className = 'choice-emoji';
+    emojiSpan.textContent = meta.emoji;
+    const labelSpan = document.createElement('span');
+    labelSpan.textContent = meta.label;
+    btn.appendChild(emojiSpan);
+    btn.appendChild(labelSpan);
+
+    btn.addEventListener('click', () => {
+      appState.wordSet = section;
+      showScreen('difficulty');
+    });
+    container.appendChild(btn);
+  });
+}
+
 function beginGame(difficulty) {
   const state = loadState(appState.profile);
-  if (state.words.length === 0) {
+  const words = appState.wordSet
+    ? state.words.filter((w) => w.section === appState.wordSet)
+    : state.words;
+
+  if (words.length === 0) {
     alert('Please add some words first!');
     renderWordList();
     resetAddForm();
     showScreen('manage');
     return;
   }
-  startGame(difficulty, state.words);
+  startGame(difficulty, words);
 }

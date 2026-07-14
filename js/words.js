@@ -61,6 +61,15 @@ const DEFAULT_EMOJI = {
 
 const FALLBACK_EMOJI = '📝';
 
+// Known sections render/offer for selection in this order; unlisted/missing sections are ignored for practice-set choice.
+const SECTION_DISPLAY_ORDER = ['This Week', 'Recap'];
+
+// Distinct known sections actually present among these words, in display order.
+function getAvailableSections(words) {
+  const present = new Set(words.map((w) => w.section).filter(Boolean));
+  return SECTION_DISPLAY_ORDER.filter((key) => present.has(key));
+}
+
 function getWordEmoji(text) {
   return DEFAULT_EMOJI[text] || FALLBACK_EMOJI;
 }

@@ -1,9 +1,7 @@
 // Manage Words screen: list, add (with optional photo upload), delete, reset to defaults.
 let pendingImageDataUrl = null;
 
-// Known sections render first, in this order; words with no section (or an unlisted one) render last, unheaded.
-const SECTION_DISPLAY_ORDER = ['This Week', 'Recap'];
-
+// Words with no section (or one not in SECTION_DISPLAY_ORDER, from words.js) render last, unheaded.
 function groupWordsBySection(words) {
   const groups = new Map();
   words.forEach((word) => {

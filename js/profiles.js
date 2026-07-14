@@ -10,6 +10,7 @@ function selectProfile(profileId) {
 function switchProfile() {
   appState.profile = null;
   appState.difficulty = null;
+  appState.wordSet = null;
   appState.words = [];
   appState.playOrder = [];
   appState.currentIndex = 0;
