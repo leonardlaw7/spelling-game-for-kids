@@ -1,10 +1,43 @@
 // Word model helpers: default word lists, emoji lookup, validation, shuffling.
 const DEFAULT_WORD_LISTS = {
-  dalton: ['shack', 'damp', 'spat', 'snacked', 'dashed', 'snapped', 'crashed', 'crack'],
+  dalton: [
+    'slept', 'yelled', 'shelf', 'begged', 'pleasant', 'thread', 'leapt', 'ahead',
+    'shack', 'damp', 'spat', 'snacked', 'dashed', 'snapped', 'crashed', 'crack'
+  ],
   giselle: ['ant', 'map', 'cat', 'hat', 'apple', 'pan', 'mop', 'queen', 'man', 'car', 'fish']
 };
 
+// Groups new default words for display in Manage Words. Words with no entry here render ungrouped.
+const DEFAULT_WORD_SECTIONS = {
+  dalton: {
+    slept: 'This Week',
+    yelled: 'This Week',
+    shelf: 'This Week',
+    begged: 'This Week',
+    pleasant: 'This Week',
+    thread: 'This Week',
+    leapt: 'This Week',
+    ahead: 'This Week',
+    shack: 'Recap',
+    damp: 'Recap',
+    spat: 'Recap',
+    snacked: 'Recap',
+    dashed: 'Recap',
+    snapped: 'Recap',
+    crashed: 'Recap',
+    crack: 'Recap'
+  }
+};
+
 const DEFAULT_EMOJI = {
+  slept: '😴',
+  yelled: '📢',
+  shelf: '📚',
+  begged: '🙏',
+  pleasant: '😊',
+  thread: '🧵',
+  leapt: '🐸',
+  ahead: '➡️',
   shack: '🛖',
   damp: '💧',
   spat: '💦',

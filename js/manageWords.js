@@ -1,43 +1,72 @@
 // Manage Words screen: list, add (with optional photo upload), delete, reset to defaults.
 let pendingImageDataUrl = null;
 
+// Known sections render first, in this order; words with no section (or an unlisted one) render last, unheaded.
+const SECTION_DISPLAY_ORDER = ['This Week', 'Recap'];
+
+function groupWordsBySection(words) {
+  const groups = new Map();
+  words.forEach((word) => {
+    const key = word.section || null;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(word);
+  });
+  return groups;
+}
+
 function renderWordList() {
   const state = loadState(appState.profile);
   appState.words = state.words;
   const list = document.getElementById('word-list');
   list.innerHTML = '';
 
-  state.words.forEach((word) => {
-    const li = document.createElement('li');
+  const groups = groupWordsBySection(state.words);
+  const orderedKeys = [
+    ...SECTION_DISPLAY_ORDER.filter((key) => groups.has(key)),
+    ...[...groups.keys()].filter((key) => !SECTION_DISPLAY_ORDER.includes(key))
+  ];
 
-    const thumb = document.createElement('div');
-    thumb.className = 'word-thumb';
-    const img = getWordImage(word);
-    if (img.type === 'image') {
-      const el = document.createElement('img');
-      el.src = img.src;
-      el.alt = '';
-      thumb.appendChild(el);
-    } else {
-      thumb.textContent = img.value;
+  orderedKeys.forEach((key) => {
+    if (key) {
+      const header = document.createElement('li');
+      header.className = 'word-section-header';
+      header.textContent = key;
+      list.appendChild(header);
     }
-
-    const text = document.createElement('span');
-    text.className = 'word-text';
-    text.textContent = word.text;
-
-    const del = document.createElement('button');
-    del.className = 'delete-btn';
-    del.type = 'button';
-    del.title = 'Delete';
-    del.textContent = '✕';
-    del.addEventListener('click', () => deleteWord(word.id));
-
-    li.appendChild(thumb);
-    li.appendChild(text);
-    li.appendChild(del);
-    list.appendChild(li);
+    groups.get(key).forEach((word) => list.appendChild(renderWordListItem(word)));
   });
+}
+
+function renderWordListItem(word) {
+  const li = document.createElement('li');
+
+  const thumb = document.createElement('div');
+  thumb.className = 'word-thumb';
+  const img = getWordImage(word);
+  if (img.type === 'image') {
+    const el = document.createElement('img');
+    el.src = img.src;
+    el.alt = '';
+    thumb.appendChild(el);
+  } else {
+    thumb.textContent = img.value;
+  }
+
+  const text = document.createElement('span');
+  text.className = 'word-text';
+  text.textContent = word.text;
+
+  const del = document.createElement('button');
+  del.className = 'delete-btn';
+  del.type = 'button';
+  del.title = 'Delete';
+  del.textContent = '✕';
+  del.addEventListener('click', () => deleteWord(word.id));
+
+  li.appendChild(thumb);
+  li.appendChild(text);
+  li.appendChild(del);
+  return li;
 }
 
 function deleteWord(id) {

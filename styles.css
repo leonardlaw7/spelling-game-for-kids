@@ -383,6 +383,17 @@ button {
   margin-bottom: 0.6rem;
 }
 
+.word-section-header {
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.65;
+  padding: 0.4rem 0.2rem;
+  margin-bottom: 0.3rem;
+  background: none;
+}
+
 .word-thumb {
   width: 2.5rem;
   height: 2.5rem;

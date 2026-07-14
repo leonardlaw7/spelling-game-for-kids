@@ -10,12 +10,45 @@ function makeId() {
   return 'w_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
 }
 
+function getDefaultWordSection(profileId, text) {
+  const sections = DEFAULT_WORD_SECTIONS[profileId];
+  return (sections && sections[text]) || null;
+}
+
 function getDefaultWords(profileId) {
-  return DEFAULT_WORD_LISTS[profileId].map((text) => ({ id: makeId(), text, imageDataUrl: null }));
+  return DEFAULT_WORD_LISTS[profileId].map((text) => ({
+    id: makeId(),
+    text,
+    imageDataUrl: null,
+    section: getDefaultWordSection(profileId, text)
+  }));
 }
 
 function isValidWordsState(data) {
   return data && typeof data === 'object' && Array.isArray(data.words);
+}
+
+// Keeps existing saved word lists in sync with newly added default words/sections
+// (e.g. a new week's word list) without touching words the player added or removed themselves.
+function mergeNewDefaultWords(profileId, state) {
+  let changed = false;
+
+  state.words.forEach((word) => {
+    const section = getDefaultWordSection(profileId, word.text);
+    if (section && word.section !== section) {
+      word.section = section;
+      changed = true;
+    }
+  });
+
+  (DEFAULT_WORD_LISTS[profileId] || []).forEach((text) => {
+    if (!state.words.some((w) => w.text === text)) {
+      state.words.push({ id: makeId(), text, imageDataUrl: null, section: getDefaultWordSection(profileId, text) });
+      changed = true;
+    }
+  });
+
+  return changed;
 }
 
 function loadState(profileId) {
@@ -35,6 +68,7 @@ function loadState(profileId) {
   try {
     const parsed = JSON.parse(raw);
     if (!isValidWordsState(parsed)) throw new Error('bad shape');
+    if (mergeNewDefaultWords(profileId, parsed)) saveState(profileId, parsed);
     return parsed;
   } catch (e) {
     const seeded = { schemaVersion: SCHEMA_VERSION, words: getDefaultWords(profileId) };
