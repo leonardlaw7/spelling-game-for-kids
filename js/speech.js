@@ -12,7 +12,11 @@ function pickPreferredVoice() {
   if (!speechSupported()) return null;
   const voices = speechSynthesis.getVoices();
   if (!voices || voices.length === 0) return null;
-  return voices.find((v) => v.lang && v.lang.toLowerCase().startsWith('en')) || voices[0];
+  const english = voices.filter((v) => v.lang && v.lang.toLowerCase().startsWith('en'));
+  const pool = english.length ? english : voices;
+  // Prefer an on-device voice: cloud-based ones silently produce no audio at all
+  // on restricted/offline networks, with no error to catch.
+  return pool.find((v) => v.localService) || pool[0];
 }
 
 if (speechSupported()) {
@@ -35,7 +39,10 @@ function speak(text, options) {
   utterance.rate = opts.rate != null ? opts.rate : 0.95;
   utterance.volume = 1.0;
   if (cachedVoice) utterance.voice = cachedVoice;
-  speechSynthesis.speak(utterance);
+  utterance.onerror = (e) => console.warn('Speech synthesis failed:', e.error);
+  // Chrome has a long-standing bug where speak() called synchronously right after
+  // cancel() is silently dropped (and can wedge all future speech). A tiny delay dodges it.
+  setTimeout(() => speechSynthesis.speak(utterance), 30);
 }
 
 function speakWord(word) {
