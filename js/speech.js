@@ -1,17 +1,16 @@
 // Web Speech API wrapper: word playback, per-letter pronunciation, praise/gentle feedback.
 const PRAISE_PHRASES = ['Awesome!', 'You got it!', 'Wonderful!', 'Great job!'];
 
-let cachedVoice = null;
-let voicesReady = false;
+// Only the URI is cached long-term, never the SpeechSynthesisVoice object itself: some
+// Chrome/Edge builds invalidate previously-returned voice objects internally, so reusing
+// one across calls makes every speak() after the first silently produce no audio.
+let cachedVoiceURI = null;
 
 function speechSupported() {
   return 'speechSynthesis' in window;
 }
 
-function pickPreferredVoice() {
-  if (!speechSupported()) return null;
-  const voices = speechSynthesis.getVoices();
-  if (!voices || voices.length === 0) return null;
+function pickPreferredVoice(voices) {
   const english = voices.filter((v) => v.lang && v.lang.toLowerCase().startsWith('en'));
   const pool = english.length ? english : voices;
   // Prefer an on-device voice: cloud-based ones silently produce no audio at all
@@ -19,30 +18,41 @@ function pickPreferredVoice() {
   return pool.find((v) => v.localService) || pool[0];
 }
 
-if (speechSupported()) {
-  cachedVoice = pickPreferredVoice();
-  if (cachedVoice) voicesReady = true;
-  speechSynthesis.addEventListener('voiceschanged', () => {
-    if (!voicesReady) {
-      cachedVoice = pickPreferredVoice();
-      voicesReady = true;
-    }
-  });
+// Resolves a live voice object from a freshly-fetched voice list every call.
+function getCurrentVoice() {
+  if (!speechSupported()) return null;
+  const voices = speechSynthesis.getVoices();
+  if (!voices || voices.length === 0) return null;
+
+  if (cachedVoiceURI) {
+    const match = voices.find((v) => v.voiceURI === cachedVoiceURI);
+    if (match) return match;
+  }
+
+  const picked = pickPreferredVoice(voices);
+  if (picked) cachedVoiceURI = picked.voiceURI;
+  return picked;
 }
 
 function speak(text, options) {
   if (!speechSupported() || !text) return;
   const opts = options || {};
-  speechSynthesis.cancel();
+  if (speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel();
+
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.pitch = opts.pitch != null ? opts.pitch : 1.0;
   utterance.rate = opts.rate != null ? opts.rate : 0.95;
   utterance.volume = 1.0;
-  if (cachedVoice) utterance.voice = cachedVoice;
+  const voice = getCurrentVoice();
+  if (voice) utterance.voice = voice;
   utterance.onerror = (e) => console.warn('Speech synthesis failed:', e.error);
+
   // Chrome has a long-standing bug where speak() called synchronously right after
   // cancel() is silently dropped (and can wedge all future speech). A tiny delay dodges it.
-  setTimeout(() => speechSynthesis.speak(utterance), 30);
+  setTimeout(() => {
+    if (speechSynthesis.paused) speechSynthesis.resume();
+    speechSynthesis.speak(utterance);
+  }, 30);
 }
 
 function speakWord(word) {
