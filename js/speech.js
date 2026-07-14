@@ -15,6 +15,12 @@ function unpinUtterance(utterance) {
   if (index !== -1) pinnedUtterances.splice(index, 1);
 }
 
+// Our own "is something currently speaking" tracking, driven by onend/onerror rather than
+// speechSynthesis.speaking/.pending - those flags can get stuck `true` forever on some Chrome
+// builds, which then makes us call cancel() needlessly, which interrupts the very utterance
+// we're about to queue.
+let activeUtterance = null;
+
 function speechSupported() {
   return 'speechSynthesis' in window;
 }
@@ -46,7 +52,10 @@ function getCurrentVoice() {
 function speak(text, options) {
   if (!speechSupported() || !text) return;
   const opts = options || {};
-  if (speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel();
+
+  // Only cancel if we know (via our own bookkeeping) something is genuinely still
+  // in flight - e.g. the player tapped another tile before the last one finished.
+  if (activeUtterance) speechSynthesis.cancel();
 
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.pitch = opts.pitch != null ? opts.pitch : 1.0;
@@ -54,17 +63,19 @@ function speak(text, options) {
   utterance.volume = 1.0;
   const voice = getCurrentVoice();
   if (voice) utterance.voice = voice;
-  utterance.onend = () => unpinUtterance(utterance);
-  utterance.onerror = (e) => {
-    console.warn('Speech synthesis failed:', e.error);
+
+  const clearActive = () => {
+    if (activeUtterance === utterance) activeUtterance = null;
     unpinUtterance(utterance);
   };
-  pinnedUtterances.push(utterance);
+  utterance.onend = clearActive;
+  utterance.onerror = (e) => {
+    console.warn('Speech synthesis failed:', e.error);
+    clearActive();
+  };
 
-  // Call speak() synchronously, in the same tick as the triggering click - deferring it
-  // (e.g. via setTimeout) can make the browser stop treating it as a direct result of the
-  // user's gesture, which some browsers require in order to actually produce audio.
-  if (speechSynthesis.paused) speechSynthesis.resume();
+  activeUtterance = utterance;
+  pinnedUtterances.push(utterance);
   speechSynthesis.speak(utterance);
 }
 
