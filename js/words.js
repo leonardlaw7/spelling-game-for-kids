@@ -1,8 +1,8 @@
 // Word model helpers: default word lists, emoji lookup, validation, shuffling.
 const DEFAULT_WORD_LISTS = {
   dalton: [
-    'slept', 'yelled', 'shelf', 'begged', 'pleasant', 'thread', 'leapt', 'ahead',
-    'shack', 'damp', 'spat', 'snacked', 'dashed', 'snapped', 'crashed', 'crack'
+    'twins', 'sticks', 'visited', 'things', 'swimming', 'blinked', 'rigged', 'finished',
+    'slept', 'yelled', 'shelf', 'begged', 'pleasant', 'thread', 'leapt', 'ahead'
   ],
   giselle: ['ant', 'map', 'cat', 'hat', 'apple', 'pan', 'mop', 'queen', 'man', 'car', 'fish']
 };
@@ -10,26 +10,34 @@ const DEFAULT_WORD_LISTS = {
 // Groups new default words for display in Manage Words. Words with no entry here render ungrouped.
 const DEFAULT_WORD_SECTIONS = {
   dalton: {
-    slept: 'This Week',
-    yelled: 'This Week',
-    shelf: 'This Week',
-    begged: 'This Week',
-    pleasant: 'This Week',
-    thread: 'This Week',
-    leapt: 'This Week',
-    ahead: 'This Week',
-    shack: 'Recap',
-    damp: 'Recap',
-    spat: 'Recap',
-    snacked: 'Recap',
-    dashed: 'Recap',
-    snapped: 'Recap',
-    crashed: 'Recap',
-    crack: 'Recap'
+    twins: 'This Week',
+    sticks: 'This Week',
+    visited: 'This Week',
+    things: 'This Week',
+    swimming: 'This Week',
+    blinked: 'This Week',
+    rigged: 'This Week',
+    finished: 'This Week',
+    slept: 'Recap',
+    yelled: 'Recap',
+    shelf: 'Recap',
+    begged: 'Recap',
+    pleasant: 'Recap',
+    thread: 'Recap',
+    leapt: 'Recap',
+    ahead: 'Recap'
   }
 };
 
 const DEFAULT_EMOJI = {
+  twins: '👯',
+  sticks: '🪵',
+  visited: '🧳',
+  things: '📦',
+  swimming: '🏊',
+  blinked: '👁️',
+  rigged: '⛵',
+  finished: '🏁',
   slept: '😴',
   yelled: '📢',
   shelf: '📚',
@@ -38,14 +46,6 @@ const DEFAULT_EMOJI = {
   thread: '🧵',
   leapt: '🐸',
   ahead: '➡️',
-  shack: '🛖',
-  damp: '💧',
-  spat: '💦',
-  snacked: '🍪',
-  dashed: '💨',
-  snapped: '💥',
-  crashed: '💥',
-  crack: '🥚',
   ant: '🐜',
   map: '🗺️',
   cat: '🐱',
