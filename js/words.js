@@ -1,8 +1,8 @@
 // Word model helpers: default word lists, emoji lookup, validation, shuffling.
 const DEFAULT_WORD_LISTS = {
   dalton: [
-    'hook', 'woods', 'stood', 'blushes', 'woman', 'would', 'pudding', 'mistook',
-    'wrong', 'mocked', 'across', 'object', 'shocked', 'hopping', 'blocked', 'nodded'
+    'night', 'whined', 'meantime', 'bright', 'wild', 'frightening', 'satisfied', 'silently',
+    'hook', 'woods', 'stood', 'blushes', 'woman', 'would', 'pudding', 'mistook'
   ],
   giselle: ['ant', 'map', 'cat', 'hat', 'apple', 'pan', 'mop', 'queen', 'man', 'car', 'fish']
 };
@@ -10,26 +10,34 @@ const DEFAULT_WORD_LISTS = {
 // Groups new default words for display in Manage Words. Words with no entry here render ungrouped.
 const DEFAULT_WORD_SECTIONS = {
   dalton: {
-    hook: 'This Week',
-    woods: 'This Week',
-    stood: 'This Week',
-    blushes: 'This Week',
-    woman: 'This Week',
-    would: 'This Week',
-    pudding: 'This Week',
-    mistook: 'This Week',
-    wrong: 'Recap',
-    mocked: 'Recap',
-    across: 'Recap',
-    object: 'Recap',
-    shocked: 'Recap',
-    hopping: 'Recap',
-    blocked: 'Recap',
-    nodded: 'Recap'
+    night: 'This Week',
+    whined: 'This Week',
+    meantime: 'This Week',
+    bright: 'This Week',
+    wild: 'This Week',
+    frightening: 'This Week',
+    satisfied: 'This Week',
+    silently: 'This Week',
+    hook: 'Recap',
+    woods: 'Recap',
+    stood: 'Recap',
+    blushes: 'Recap',
+    woman: 'Recap',
+    would: 'Recap',
+    pudding: 'Recap',
+    mistook: 'Recap'
   }
 };
 
 const DEFAULT_EMOJI = {
+  night: '🌙',
+  whined: '😩',
+  meantime: '⏳',
+  bright: '☀️',
+  wild: '🦁',
+  frightening: '👻',
+  satisfied: '😌',
+  silently: '🤫',
   hook: '🪝',
   woods: '🌲',
   stood: '🧍',
